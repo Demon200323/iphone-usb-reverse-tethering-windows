@@ -1,0 +1,21 @@
+{
+  "token":    "MTEwODc3NDgwOTg1MDEwMTc3MA.GqKtdf.TbMTSHE5Gcb0ccn4Bwj-JWUe_Davo4t1Ac-GBc",
+  "clientId": "1108774809850101770",
+   "groqApiKey":  "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",
+  "database": {
+    "host":     "s2.bisquit.host",
+    "port":     3306,
+    "user":     "u6626_qOsdBDx1Yt",
+    "password": "iYWPGyo58X@^gSZqx!JEdYOg",
+    "name":     "s6626_aurex9"
+  },
+
+  "globalLogChannel": null,
+
+  "_comment": [
+    "token      — токен вашего Discord-бота",
+    "clientId   — Application ID бота (из Discord Developer Portal)",
+    "database   — параметры подключения к MySQL",
+    "Все настройки сервера задаются через /настройки или /панель прямо в Discord"
+  ]
+}
