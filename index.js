@@ -1,6 +1,6 @@
 // ── АВТОУСТАНОВКА ЗАВИСИМОСТЕЙ ───────────────────────────────────
 const { execSync } = require("child_process");
-const required = ["play-dl", "@discordjs/voice", "@discordjs/opus"];
+const required = ["play-dl", "@discordjs/voice", "@discordjs/opus", "mysql2", "yt-search"];
 for (const pkg of required) {
   try { require.resolve(pkg); }
   catch {
