@@ -247,7 +247,7 @@ async function handlePlay(interaction, db) {
     if (db) {
       try {
         const [[row]] = await db.query(
-          "SELECT value FROM guild_settings WHERE guild_id=? AND `key`=?",
+          "SELECT value FROM guild_settings WHERE guild_id=$1 AND key=$2",
           [guildId, "music_default_volume"]
         );
         if (row?.value) defaultVolume = Math.max(0, Math.min(200, parseInt(row.value))) / 100;
