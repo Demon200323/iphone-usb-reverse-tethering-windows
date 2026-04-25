@@ -1,28 +1,27 @@
+// ── АВТОУСТАНОВКА ЗАВИСИМОСТЕЙ ───────────────────────────────────
+const { execSync } = require("child_process");
+const required = ["play-dl", "@discordjs/voice", "@discordjs/opus"];
+for (const pkg of required) {
+  try { require.resolve(pkg); }
+  catch {
+    console.log(`[boot] Устанавливаю ${pkg}...`);
+    execSync(`npm install ${pkg} --save --prefer-offline`, { stdio: "inherit" });
+    console.log(`[boot] ${pkg} установлен ✅`);
+  }
+}
+// ────────────────────────────────────────────────────────────────
+
 // ================================================================
 // AUREX-9 v3.0 | Многосерверный Discord-бот
-// Модульная архитектура | PostgreSQL | Groq LLM | TGD 5.2 Music
+// Модульная архитектура | MySQL2 | Groq LLM | TGD 5.2 Music
 // ================================================================
-
-// Автоустановка зависимостей
-const { execSync } = require("child_process");
-try {
-  require.resolve("groq-sdk");
-  require.resolve("pg");
-  require.resolve("yt-search");
-  require.resolve("@discordjs/voice");
-} catch {
-  console.log("📦 Устанавливаю зависимости...");
-  execSync("npm install groq-sdk pg yt-search @discordjs/voice discord.js", { stdio: "inherit" });
-  console.log("✅ Зависимости установлены.");
-}
-
 
 const {
   Client, GatewayIntentBits, Partials,
   EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle,
   PermissionFlagsBits, AuditLogEvent, AttachmentBuilder
 } = require("discord.js");
-const mysql = require("./pg-adapter");
+const mysql = require("mysql2/promise");
 
 const { initDB }                              = require("./modules/database");
 const { getGuildSetting, setGuildSetting }    = require("./modules/settings");
@@ -71,11 +70,14 @@ const {
 // ── БАЗА ДАННЫХ ──────────────────────────────────────────────────
 const db = mysql.createPool({
   host:             CONFIG.database.host,
-  port:             CONFIG.database.port || 5432,
+  port:             CONFIG.database.port,
   user:             CONFIG.database.user,
   password:         CONFIG.database.password,
   database:         CONFIG.database.name,
+  waitForConnections: true,
   connectionLimit:  20,
+  queueLimit:       0,
+  charset:          "utf8mb4"
 });
 
 // ── МЕНЕДЖЕРЫ ────────────────────────────────────────────────────
