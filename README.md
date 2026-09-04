@@ -114,7 +114,7 @@ Uninstall.ps1      reverts everything Setup and the script changed
 USB Share.cmd      double-click launcher; passes arguments through
 USB-Share.ps1      auto | menu | on | off | status | watch
 iphone_mode.py     GET_MODE / SET_MODE tool (pyusb + libusb0)
-libusb0.dll        libusb-win32 user-mode library (LGPL), used by iphone_mode.py
+libusb0.dll        libusb-win32 user-mode library (LGPL, see THIRD_PARTY_NOTICES.md)
 libusb-win32/      created by Setup.ps1 (downloaded release; git-ignored)
 ```
 
