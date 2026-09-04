@@ -15,7 +15,7 @@ Run `Setup.ps1` once. From then on, double-click `USB Share.cmd`, plug the iPhon
 
 Tested on Windows 11 (build 26200), an iPhone with USB `PID 12A8`, iOS 17-era descriptors.
 
-**Built on a plane.** In-flight Wi-Fi allowed one device per seat, the laptop had the session, and the phone had nothing to do. No hardware to buy at 11 km altitude, so the only options were reading Windows driver docs and USB descriptors. This is the result of that flight: a fun little experiment that turned into a small piece of Windows USB-stack archaeology. It is not a product.
+**Built on a flight to Bangkok.** The in-flight Wi-Fi only allowed one device, so the laptop had the session while the phone was left out. I could've just shared it normally via hotspot—that probably would've worked—but I wanted something more stealthy and interesting. With nothing to buy at 11 km altitude, the only options left were reading Windows driver docs and USB descriptors. A fun little experiment that turned into a small piece of Windows USB-stack archaeology. Committed this straight from the plane. (I hate that they don't have Starlink yet btw)
 
 ## Why this is possible
 
