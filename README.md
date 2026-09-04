@@ -8,6 +8,9 @@
 
 ## TL;DR
 
+![USB Share running: mode switch, NCM adapter up, ICS on, phone leased 192.168.137.180, live counters](docs/usb-share.png)
+
+
 Run `Setup.ps1` once. From then on, double-click `USB Share.cmd`, plug the iPhone in, and 15 to 25 s later the phone shows **Settings → Ethernet** with a `192.168.137.x` address routed through the laptop's Wi-Fi. Unplug and replug whenever; it re-arms itself. Nothing is transmitted over the air by the laptop. Works with the phone locked. No "Trust This Computer" prompt.
 
 Tested on Windows 11 (build 26200), an iPhone with USB `PID 12A8`, iOS 17-era descriptors.
