@@ -1,6 +1,6 @@
 // ── АВТОУСТАНОВКА ЗАВИСИМОСТЕЙ ───────────────────────────────────
 const { execSync } = require("child_process");
-const required = ["play-dl", "@discordjs/voice", "@discordjs/opus", "mysql2", "yt-search"];
+const required = ["play-dl", "@discordjs/voice", "@discordjs/opus", "pg", "yt-search"];
 for (const pkg of required) {
   try { require.resolve(pkg); }
   catch {
@@ -21,7 +21,7 @@ const {
   EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle,
   PermissionFlagsBits, AuditLogEvent, AttachmentBuilder
 } = require("discord.js");
-const mysql = require("mysql2/promise");
+const { Pool } = require("pg");
 
 const { initDB }                              = require("./modules/database");
 const { getGuildSetting, setGuildSetting }    = require("./modules/settings");
@@ -68,17 +68,44 @@ const {
 } = require("./modules/panel-functions");
 
 // ── БАЗА ДАННЫХ ──────────────────────────────────────────────────
-const db = mysql.createPool({
-  host:             CONFIG.database.host,
-  port:             CONFIG.database.port,
-  user:             CONFIG.database.user,
-  password:         CONFIG.database.password,
-  database:         CONFIG.database.name,
-  waitForConnections: true,
-  connectionLimit:  20,
-  queueLimit:       0,
-  charset:          "utf8mb4"
+const _pgPool = new Pool({
+  host:     CONFIG.database.host,
+  port:     CONFIG.database.port,
+  user:     CONFIG.database.user,
+  password: CONFIG.database.password,
+  database: CONFIG.database.name,
+  max:      20,
+  ssl:      CONFIG.database.ssl ? { rejectUnauthorized: false } : false
 });
+
+// Обёртка совместимости: db.query(sql, params) работает как раньше
+const db = {
+  query: async (sql, params = []) => {
+    // mysql2 использует ? как плейсхолдеры, pg использует $1,$2...
+    let i = 0;
+    const pgSql = sql.replace(/\?/g, () => `$${++i}`);
+    const res = await _pgPool.query(pgSql, params);
+    // mysql2 возвращает [rows, fields], имитируем это
+    return [res.rows, res.fields];
+  },
+  execute: async (sql, params = []) => {
+    let i = 0;
+    const pgSql = sql.replace(/\?/g, () => `$${++i}`);
+    const res = await _pgPool.query(pgSql, params);
+    return [res.rows, res.fields];
+  },
+  getConnection: async () => {
+    const client = await _pgPool.connect();
+    return {
+      query:    async (sql, params = []) => { let i=0; const r=await client.query(sql.replace(/\?/g,()=>`$${++i}`),params); return [r.rows]; },
+      execute:  async (sql, params = []) => { let i=0; const r=await client.query(sql.replace(/\?/g,()=>`$${++i}`),params); return [r.rows]; },
+      release:  () => client.release(),
+      beginTransaction: async () => client.query("BEGIN"),
+      commit:           async () => client.query("COMMIT"),
+      rollback:         async () => client.query("ROLLBACK"),
+    };
+  }
+};
 
 // ── МЕНЕДЖЕРЫ ────────────────────────────────────────────────────
 let auditLogger, ticketManager, moderationManager, controlPanel, commandRegistry, economyManager;
